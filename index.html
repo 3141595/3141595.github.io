@@ -15,7 +15,10 @@
   var year = modified.getFullYear();
   var month= modified.getMonth() + 1;
   var date = modified.getDate();
-  document.write( "最終更新日：" + year + "年" + month + "月" + date + "日" );
+  var hours = modified.getHours();
+  var minute = modified.getMinutes();
+  var second = modified.getSeconds();
+  document.write( "最終更新日：" + year + "年" + month + "月" + date + "日 " + hours + "時" + minute + "分" + second + "秒");
 </script>
 
 
@@ -36,8 +39,8 @@
     <section id="about" class="section">
       <h2>About</h2>
       <p>
-        This site is Portfolio about I created.
-        I'm interested in Mathmatics and Infomations, so I usually write articles about them.
+        This site is Portfolio about I created.<br>
+        I'm interested in Mathmatics and Infomations, so I usually write articles about them.<br>
         My hobbies are listening music and learning language.
       </p>
     </section>
@@ -75,7 +78,7 @@
           <p>
             Just for fun.
           </p>
-          <a href="#" class="button">View More</a>
+          <a href="./IQ.html" class="button">View More</a>
         </article>
       </div>
     </section>
