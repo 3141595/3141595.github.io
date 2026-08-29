@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>WMI test</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+
+<script type="text/javascript">
+    function makeDigits(length) {
+        const digits = [];
+    
+        for (let i = 0; i < length; i++) {
+            digits.push(Math.floor(Math.random() * 10));
+        }
+    
+        console.log(digits);
+        speakDigits(digits);
+        return 0;
+    }
+    
+    async function speakDigits(digits) {
+        for (const digit of digits) {
+            await speak(digit.toString());
+            await sleep(700);
+        }
+    }
+    
+    function speak(text) {
+        return new Promise(resolve => {
+            const utterance = new SpeechSynthesisUtterance(text);
+    
+            utterance.lang = "ja-JP";
+            utterance.rate = 1.0;
+    
+            utterance.onend = resolve;
+    
+            speechSynthesis.speak(utterance);
+        });
+    }
+    
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+</script>
+
+
+<body>
+  <main class="container">
+    <section id="about" class="section">
+      <h2>WMI</h2>
+      <p>ここではワーキングメモリの検査をします。最初は自分で桁数を選び、読み上げ速度を調整してください。</p>
+      <button onclick="makeDigits(3)">テストを開始！</button>
+    </section>
+  </main>
+</body>
+</html>
