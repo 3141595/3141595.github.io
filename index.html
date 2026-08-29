@@ -1,3 +1,4 @@
+<!-- 2026/8/29(土)23:39追記 -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -7,6 +8,16 @@
   <title>Portfolio</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
+
+<script type="text/javascript">
+  var modified = new Date(document.lastModified);
+  var year = modified.getFullYear();
+  var month= modified.getMonth() + 1;
+  var date = modified.getDate();
+  document.write( "最終更新日：" + year + "年" + month + "月" + date + "日" );
+</script>
+
 
 <body>
   <header class="hero">
@@ -26,6 +37,8 @@
       <h2>About</h2>
       <p>
         This site is Portfolio about I created.
+        I'm interested in Mathmatics and Infomations, so I usually write articles about them.
+        My hobbies are listening music and learning language.
       </p>
     </section>
 
@@ -34,9 +47,9 @@
 
       <div class="card-list">
         <article class="card">
-          <h3>Python Game</h3>
+          <h3>Games</h3>
           <p>
-            The works using Python & pygame.
+            Many games I created.
           </p>
           <a href="#" class="button">View More</a>
         </article>
@@ -53,6 +66,14 @@
           <h3>Music</h3>
           <p>
             Composing Music.
+          </p>
+          <a href="#" class="button">View More</a>
+        </article>
+
+        <article class="card">
+          <h3>IQ test</h3>
+          <p>
+            Just for fun.
           </p>
           <a href="#" class="button">View More</a>
         </article>
@@ -74,7 +95,7 @@
       <h2>Links</h2>
       <ul>
         <li><a href="https://github.com/">GitHub</a></li>
-        <li><a href="#">Kaggle</a></li>
+        <li><a href="https://www.kaggle.com/">Kaggle</a></li>
         <li><a href="#">YouTube</a></li>
       </ul>
     </section>
