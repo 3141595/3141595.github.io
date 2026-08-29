@@ -9,52 +9,191 @@
 </head>
 
 
-<script type="text/javascript">
-    function makeDigits(length) {
-        const digits = [];
-    
-        for (let i = 0; i < length; i++) {
-            digits.push(Math.floor(Math.random() * 10));
-        }
-    
-        console.log(digits);
-        speakDigits(digits);
-        return 0;
-    }
-    
-    async function speakDigits(digits) {
-        for (const digit of digits) {
-            await speak(digit.toString());
-            await sleep(700);
-        }
-    }
-    
-    function speak(text) {
-        return new Promise(resolve => {
-            const utterance = new SpeechSynthesisUtterance(text);
-    
-            utterance.lang = "ja-JP";
-            utterance.rate = 1.0;
-    
-            utterance.onend = resolve;
-    
-            speechSynthesis.speak(utterance);
-        });
-    }
-    
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-</script>
-
 
 <body>
   <main class="container">
     <section id="about" class="section">
       <h2>WMI</h2>
       <p>ここではワーキングメモリの検査をします。最初は自分で桁数を選び、読み上げ速度を調整してください。</p>
-      <button onclick="makeDigits(3)">テストを開始！</button>
+      <div>
+        <label for="digits">桁数：</label>
+        <input
+            type="number"
+            id="digits"
+            value="5"
+            min="2"
+            max="12"
+            step="1"
+        >
+      </div>
+
+      <div>
+        <label for="speed">読み上げ速度：</label>
+        <input
+            type="range"
+            id="speed"
+            min="0.5"
+            max="2.0"
+            step="0.1"
+            value="1.0"
+        >
+        <span id="speedValue">1.0</span>
+      </div>
+      <center><button class="button" id="prac">読み上げ速度を試す</button></center>
+      <p>例: 3, 7, 1</p>
+
+
+      <div>
+        <p>課題：</p>
+        <label>
+          <input type="radio" name="mode" value="forward" checked>
+          順唱
+        </label>
+        <label>
+          <input type="radio" name="mode" value="backward">
+          逆唱
+        </label>
+      </div>
+
+      <center><button class="button" id="startButton">テストを開始！</button></center>
+
+      <div id="answerArea" style="display:none;">
+        <label for="answer">答え：</label>
+        <input
+          type="text"
+          id="answer"
+          inputmode="numeric"
+          autocomplete="off"
+        >
+        <button class="button" id="answerButton">
+          回答
+        </button>
+        <p id="result"></p>
+      </div>
     </section>
   </main>
+
+
+<script>
+    const digitsInput = document.getElementById("digits");
+    const speedInput = document.getElementById("speed");
+    const speedValue = document.getElementById("speedValue");
+    const startButton = document.getElementById("startButton");
+
+    let currentDigits = [];
+    let currentLength = 5;
+    
+    
+    // スライダーの値を表示
+    speedInput.addEventListener("input", () => {
+        speedValue.textContent = speedInput.value;
+    });
+    
+    
+    // ランダムな数字列を作る
+    function makeDigits(length) {
+        const digits = [];
+        for (let i = 0; i < length; i++) {
+            digits.push(Math.floor(Math.random() * 10));
+        }
+        return digits;
+    }
+    
+    
+    // 1つの数字を読み上げる
+    function speak(text, speed) {
+        return new Promise(resolve => {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = "ja-JP";
+            utterance.rate = speed;
+            utterance.onend = resolve;
+            speechSynthesis.speak(utterance);
+        });
+    }
+    
+    
+    // 数字を順番に読む
+    async function speakDigits(digits, speed) {
+        for (const digit of digits) {
+            await speak(digit.toString(), speed);
+            // 数字と数字の間
+            await new Promise(resolve => setTimeout(resolve, 300));
+        }
+    }
+    
+    
+    // 開始
+    startButton.addEventListener("click", async () => {
+        currentLength = Number(digitsInput.value);
+        const speed = Number(speedInput.value);
+        const digits = makeDigits(length);
+        console.log("問題:", digits);
+        await speakDigits(digits, speed);
+        console.log("読み上げ終了");
+        await nextQuestion();
+    });
+
+    // 次の問題
+    async function nextQuestion() {
+        const speed = Number(speedInput.value);
+        currentDigits = makeDigits(currentLength);
+        console.log("問題:", currentDigits);
+        document.getElementById("answerArea").style.display = "none";
+        document.getElementById("result").textContent = "";
+        await speakDigits(currentDigits, speed);
+        document.getElementById("answerArea").style.display = "block";
+        document.getElementById("answer").value = "";
+        document.getElementById("answer").focus();
+    }
+
+
+    // 判定
+    const answerButton = document.getElementById("answerButton");
+    const answerInput = document.getElementById("answer");
+    const result = document.getElementById("result");
+
+    answerButton.addEventListener("click", async () => {
+        const mode = document.querySelector('input[name="mode"]:checked').value;
+        const answer = answerInput.value;
+        let correctAnswer;
+        if (mode === "forward") {
+            correctAnswer = currentDigits.join("");
+        } else {
+            correctAnswer = [...currentDigits]
+                .reverse()
+                .join("");
+        }
+
+        if (answer === correctAnswer) {
+            result.textContent =
+                `${currentLength}桁クリア！`;
+            currentLength++;
+
+            // 少し待って次の問題
+            await new Promise(resolve =>
+                setTimeout(resolve, 1000)
+            );
+            await nextQuestion();
+        } else {
+            result.textContent =
+                `不正解。正解は ${correctAnswer} です。` +
+                `${currentLength}桁で終了です。`;
+        }
+    });
+
+
+    // 読み上げる関数
+    prac.addEventListener("click", async () => {
+        const speed = Number(speedInput.value);
+        const digits = [];
+        digits.push(3);
+        digits.push(7);
+        digits.push(1);
+        console.log("問題:", digits);
+        await speakDigits(digits, speed);
+        console.log("読み上げ終了");
+    });
+    
+</script>
 </body>
 </html>
